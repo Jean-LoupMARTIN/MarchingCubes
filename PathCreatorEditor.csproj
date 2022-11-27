@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{04D71B85-F0FE-DD29-B04A-AF44364C7E47}</ProjectGuid>
+    <ProjectGuid>{229FDBB5-FB7A-2A4D-C73E-945BA2413D85}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>PathCreatorEditor</AssemblyName>
@@ -752,7 +752,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="PathCreator.csproj">
-      <Project>{02CF3275-D4EB-39AC-CDAD-886B7340FD31}</Project>
+      <Project>{9C213749-9688-7DB0-B2DC-89C401555443}</Project>
       <Name>PathCreator</Name>
     </ProjectReference>
   </ItemGroup>

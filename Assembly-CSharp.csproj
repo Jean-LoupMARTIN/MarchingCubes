@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{4CE6E7A1-ED83-E51F-189B-2F8C7E8314D7}</ProjectGuid>
+    <ProjectGuid>{3B55F17F-C1E5-8BF8-7971-C697C7E79960}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -58,36 +58,30 @@
   <ItemGroup>
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/PathSpawner.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/NumericType.cs" />
-    <Compile Include="Assets/Script/Old/MC_Curve.cs" />
     <Compile Include="Assets/Script/Extension/GizmosExtension.cs" />
     <Compile Include="Assets/Script/Object/BezierCurveObj.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/NumericTypeExpectedException.cs" />
-    <Compile Include="Assets/Script/Old/MC_Object.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/SerializedPropertyExtentions.cs" />
     <Compile Include="Assets/Imported/PathCreator/JeanLoup/BezierCurveVolume.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/FieldNotFoundException.cs" />
     <Compile Include="Assets/Script/Chunk/ChunkManager.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/DrawIfAttribute.cs" />
-    <Compile Include="Assets/Script/Old/ChunkManagerOld.cs" />
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/GeneratePathExample.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/DisablingType.cs" />
     <Compile Include="Assets/Script/Object/Cube.cs" />
     <Compile Include="Assets/Script/Object/Object.cs" />
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/PathPlacer.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/ComparisonType.cs" />
-    <Compile Include="Assets/Script/Old/MC_Sphere.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/ReflectionUtil.cs" />
     <Compile Include="Assets/Script/Extension/MathExtension.cs" />
     <Compile Include="Assets/Script/MarchingCubes/MarchingCubes.cs" />
     <Compile Include="Assets/Script/Chunk/Chunk.cs" />
     <Compile Include="Assets/Script/Object/Sphere.cs" />
-    <Compile Include="Assets/Script/Old/MC_Cube.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/PropertyOrFieldNotFoundException.cs" />
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/PathSceneTool.cs" />
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/PathFollower.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/TypeUtilities.cs" />
     <Compile Include="Assets/Imported/Draw If Atribute/PropertyNotFoundException.cs" />
-    <Compile Include="Assets/Script/Old/ChunkOld.cs" />
     <Compile Include="Assets/Imported/PathCreator/Examples/Scripts/RoadMeshCreator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -805,11 +799,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="PathCreator.csproj">
-      <Project>{02CF3275-D4EB-39AC-CDAD-886B7340FD31}</Project>
+      <Project>{9C213749-9688-7DB0-B2DC-89C401555443}</Project>
       <Name>PathCreator</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreatorEditor.csproj">
-      <Project>{04D71B85-F0FE-DD29-B04A-AF44364C7E47}</Project>
+      <Project>{229FDBB5-FB7A-2A4D-C73E-945BA2413D85}</Project>
       <Name>PathCreatorEditor</Name>
     </ProjectReference>
   </ItemGroup>

@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6BF98B1E-3733-A2AC-DB9F-9D414757B730}</ProjectGuid>
+    <ProjectGuid>{B2E9DED7-7518-571C-4A95-F56C83E272E3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -819,15 +819,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{4CE6E7A1-ED83-E51F-189B-2F8C7E8314D7}</Project>
+      <Project>{3B55F17F-C1E5-8BF8-7971-C697C7E79960}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreator.csproj">
-      <Project>{02CF3275-D4EB-39AC-CDAD-886B7340FD31}</Project>
+      <Project>{9C213749-9688-7DB0-B2DC-89C401555443}</Project>
       <Name>PathCreator</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreatorEditor.csproj">
-      <Project>{04D71B85-F0FE-DD29-B04A-AF44364C7E47}</Project>
+      <Project>{229FDBB5-FB7A-2A4D-C73E-945BA2413D85}</Project>
       <Name>PathCreatorEditor</Name>
     </ProjectReference>
   </ItemGroup>
