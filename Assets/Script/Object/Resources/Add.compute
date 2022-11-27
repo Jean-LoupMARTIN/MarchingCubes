@@ -1,0 +1,73 @@
+﻿
+static const int threadsPerAxis = 8;
+
+struct PointAdd
+{
+    int idx;
+    float height;
+};
+
+
+RWStructuredBuffer<float> points;
+AppendStructuredBuffer<PointAdd> history;
+
+int pntPerAxis;
+int pntPerAxis2; // pntPerAxis * pntPerAxis
+int3 idxStart;
+int3 idxEnd;
+float fill;
+
+int fillFunction;
+// 0 : Linear
+// 1 : Square
+// 2 : SquareRoot
+// 3 : Chevron
+// 3 : ChevronSquare
+
+int Idx(int x, int y, int z)
+{
+    return x + y * pntPerAxis + z * pntPerAxis2;
+}
+
+float Abs(float a)
+{
+    if (a < 0) return -a;
+    return a;
+}
+
+[numthreads(threadsPerAxis,threadsPerAxis,threadsPerAxis)]
+void March (int3 id : SV_DispatchThreadID)
+{
+    int x = idxStart.x + id.x;
+    int y = idxStart.y + id.y;
+    int z = idxStart.z + id.z;
+
+    if (x > idxEnd.x || y > idxEnd.y || z > idxEnd.z) 
+        return;
+
+    float t = SurfaceTime(float3(x, y, z));
+
+    if (t == 0)
+        return;
+    
+    float height = fill;
+
+    if      (fillFunction == 0) height *= t;
+    else if (fillFunction == 1) height *= t * t;
+    else if (fillFunction == 2) height *= sqrt(t);
+    else if (fillFunction == 3) height *= 1 - Abs(1 - t*2);
+    else if (fillFunction == 4)
+    {
+        float chevron = 1 - Abs(1 - t*2);
+        height *= chevron * chevron;
+    }
+
+    int idx = Idx(x, y, z);
+ 
+    points[idx] += height;
+
+    PointAdd pntAdd;
+    pntAdd.idx = idx;
+    pntAdd.height = height;
+    history.Append(pntAdd);
+}

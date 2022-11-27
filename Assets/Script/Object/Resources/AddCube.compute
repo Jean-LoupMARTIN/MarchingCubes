@@ -1,0 +1,40 @@
+﻿#pragma kernel March
+
+float3 cubeCenter;
+float3 cubeSizeStart2; // cubeSizeStart / 2
+float3 cubeSizeEnd2;
+float3 cubeDSize2; // cubeSizeEnd2 - cubeSizeStart2
+
+float Min(float a, float b, float c)
+{
+    if (a <= b && a <= c) return a;
+    else if (b <= c)      return b;
+    else                  return c;
+}
+
+float SurfaceTime(float3 pos)
+{
+    float3 localPos = pos - cubeCenter;
+
+    if (localPos.x < 0) localPos.x *= -1;
+    if (localPos.y < 0) localPos.y *= -1;
+    if (localPos.z < 0) localPos.z *= -1;
+
+    if (localPos.x >= cubeSizeEnd2.x ||
+        localPos.y >= cubeSizeEnd2.y ||
+        localPos.z >= cubeSizeEnd2.z)
+        return 0;
+
+    if (localPos.x <= cubeSizeStart2.x &&
+        localPos.y <= cubeSizeStart2.y &&
+        localPos.z <= cubeSizeStart2.z)
+        return 1;
+
+    float tx = 1 - (localPos.x - cubeSizeStart2.x) / cubeDSize2.x;
+    float ty = 1 - (localPos.y - cubeSizeStart2.y) / cubeDSize2.y;
+    float tz = 1 - (localPos.z - cubeSizeStart2.z) / cubeDSize2.z;
+
+    return Min(tx, ty, tz);
+}
+
+#include "/Add.compute"

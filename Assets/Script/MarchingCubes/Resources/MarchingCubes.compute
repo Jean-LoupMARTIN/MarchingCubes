@@ -1,0 +1,91 @@
+﻿#pragma kernel March
+#include "/MarchTables.compute"
+
+static const int threadsPerAxis = 8;
+
+struct Triangle {
+    float3 vertexC;
+    float3 vertexB;
+    float3 vertexA;
+};
+
+AppendStructuredBuffer<Triangle> triangles;
+StructuredBuffer<float> points;
+
+int pntPerAxis;
+int pntPerAxis2; // pntPerAxis * pntPerAxis
+int idxMax; // pntPerAxis - 2
+float cubeSize;
+float surfaceLevel;
+bool lerp;
+
+float3 lerpVerts(float4 v1, float4 v2)
+{
+    float t = lerp ? (surfaceLevel - v1.w) / (v2.w - v1.w) : 0.5;
+    return v1.xyz + t * (v2.xyz-v1.xyz);
+}
+
+int idx(int x, int y, int z) {
+    return z * pntPerAxis2 + y * pntPerAxis + x;
+}
+
+[numthreads(threadsPerAxis, threadsPerAxis, threadsPerAxis)]
+void March (int3 id : SV_DispatchThreadID)
+{
+    int x = id.x;
+    int y = id.y;
+    int z = id.z;
+
+    // Stop one point before the end because voxel includes neighbouring points
+    if (x > idxMax || y > idxMax || z > idxMax)
+        return;
+  
+
+    // 8 corners of the current cube
+    float4 cubeCorners[8] = {
+        float4(x, y, z, points[idx(x, y, z)]),
+        float4(x + 1, y, z, points[idx(x + 1, y, z)]),
+        float4(x + 1, y, z + 1, points[idx(x + 1, y, z + 1)]),
+        float4(x, y, z + 1, points[idx(x, y, z + 1)]),
+        float4(x, y + 1, z, points[idx(x, y + 1, z)]),
+        float4(x + 1, y + 1, z, points[idx(x + 1, y + 1, z)]),
+        float4(x + 1, y + 1, z + 1, points[idx(x + 1, y + 1, z + 1)]),
+        float4(x, y + 1, z + 1, points[idx(x, y + 1, z + 1)])
+    };
+
+    // Calculate unique index for each cube configuration.
+    // There are 256 possible values
+    // A value of 0 means cube is entirely inside surface; 255 entirely outside.
+    // The value is used to look up the edge table, which indicates which edges of the cube are cut by the isosurface.
+    int cubeIndex = 0;
+    if (cubeCorners[0].w < surfaceLevel) cubeIndex |= 1;
+    if (cubeCorners[1].w < surfaceLevel) cubeIndex |= 2;
+    if (cubeCorners[2].w < surfaceLevel) cubeIndex |= 4;
+    if (cubeCorners[3].w < surfaceLevel) cubeIndex |= 8;
+    if (cubeCorners[4].w < surfaceLevel) cubeIndex |= 16;
+    if (cubeCorners[5].w < surfaceLevel) cubeIndex |= 32;
+    if (cubeCorners[6].w < surfaceLevel) cubeIndex |= 64;
+    if (cubeCorners[7].w < surfaceLevel) cubeIndex |= 128;
+
+    // Create triangles for current cube configuration
+    int edges[] = triangulation[cubeIndex];
+    for (int i = 0; edges[i] != -1; i +=3)
+    {
+        // Get indices of corner points A and B for each of the three edges
+        // of the cube that need to be joined to form the triangle.
+        int a0 = cornerIndexAFromEdge[edges[i]];
+        int b0 = cornerIndexBFromEdge[edges[i]];
+
+        int a1 = cornerIndexAFromEdge[edges[i+1]];
+        int b1 = cornerIndexBFromEdge[edges[i+1]];
+
+        int a2 = cornerIndexAFromEdge[edges[i+2]];
+        int b2 = cornerIndexBFromEdge[edges[i+2]];
+
+        Triangle tri;
+        tri.vertexA = lerpVerts(cubeCorners[a0], cubeCorners[b0]) * cubeSize;
+        tri.vertexB = lerpVerts(cubeCorners[a1], cubeCorners[b1]) * cubeSize;
+        tri.vertexC = lerpVerts(cubeCorners[a2], cubeCorners[b2]) * cubeSize;
+        triangles.Append(tri);
+    }
+}

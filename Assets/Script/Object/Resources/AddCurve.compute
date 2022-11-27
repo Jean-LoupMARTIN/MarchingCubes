@@ -1,0 +1,81 @@
+﻿#pragma kernel March
+
+
+
+
+
+struct CurvePoint
+{
+    float3 pos;
+    float radius;
+};
+
+RWStructuredBuffer<CurvePoint> curvePoints;
+int curvePointsCount;
+float radiusMarge;
+
+
+
+
+
+
+// https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
+float4 ClosestPointOnSegment(float3 x, float3 a, float3 b)
+{
+    float3 ab = b-a;
+    float3 ax = x-a;
+    float t = dot(ax, ab) / dot(ab, ab);
+    t = clamp(t, 0, 1);
+    float3 pnt = a + t * ab;
+    return float4(pnt.x, pnt.y, pnt.z, t);
+}
+
+
+float Dist2(float3 v)
+{
+    return v.x * v.x +
+           v.y * v.y +
+           v.z * v.z;
+}
+
+
+float SurfaceTime(float3 pos)
+{
+    CurvePoint leftPoint = curvePoints[0];
+    CurvePoint rightPoint;
+    float t = 0;
+
+    for (int i = 1; i < curvePointsCount; i++)
+    {
+        rightPoint = curvePoints[i];
+
+        float4 pnt4 = ClosestPointOnSegment(pos, leftPoint.pos, rightPoint.pos);
+        float3 pnt = pnt4.xyz;
+        float pntTime = pnt4.w;
+        float radiusStart = lerp(leftPoint.radius, rightPoint.radius, pntTime);
+        float radiusEnd = radiusStart + radiusMarge;
+
+        float3 toPos = pos - pnt;
+        float dist2 = Dist2(toPos);
+
+        if (dist2 <= radiusStart * radiusStart)
+            return 1;
+
+        else if (dist2 < radiusEnd * radiusEnd)
+        {
+            float dist = sqrt(dist2);
+            float tCrt = 1 - (dist-radiusStart) / (radiusEnd-radiusStart);
+            if (tCrt > t)
+                t = tCrt;
+        }
+
+        leftPoint = rightPoint;
+    }
+
+    return t;
+}
+
+#include "/Add.compute"
+
+
+

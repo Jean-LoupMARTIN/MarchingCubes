@@ -1,0 +1,32 @@
+﻿#pragma kernel March
+
+ 
+float3 center;
+float radiusStart;
+float radiusStart2; // radiusStart * radiusStart
+float radiusEnd;
+float radiusEnd2;
+float dRadius; // radiusEnd - radiusStart
+
+
+float SurfaceTime(float3 pos)
+{
+    float3 toPos = pos - center;
+
+    float dist2 = toPos.x * toPos.x +
+                  toPos.y * toPos.y +
+                  toPos.z * toPos.z;
+
+    if (dist2 >= radiusEnd2) 
+        return 0;
+
+    if (dist2 <= radiusStart2)
+        return 1;
+
+    float dist = sqrt(dist2);
+    return 1 - (dist - radiusStart) / dRadius;
+}
+
+#include "/Add.compute"
+
+ 

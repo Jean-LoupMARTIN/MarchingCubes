@@ -1,0 +1,26 @@
+﻿#pragma kernel March
+
+static const int threadsCount = 512;
+
+
+
+struct PointAdd
+{
+    int idx;
+    float height;
+};
+
+RWStructuredBuffer<float> points;
+RWStructuredBuffer<PointAdd> history;
+int idxMax;
+
+
+[numthreads(threadsCount,1,1)]
+void March (int3 id : SV_DispatchThreadID)
+{
+    if (id.x > idxMax) 
+        return;
+
+    PointAdd pntAdd = history[id.x];
+    points[pntAdd.idx] -= pntAdd.height;
+}
