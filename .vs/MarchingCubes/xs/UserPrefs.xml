@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{3B55F17F-C1E5-8BF8-7971-C697C7E79960}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/Chunk/Chunk.cs">
+    <Files>
+      <File FileName="Assets/Script/Chunk/Chunk.cs" Line="218" Column="53" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="794a8547-a8d7-4276-85f2-9edcbd5c9b25" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

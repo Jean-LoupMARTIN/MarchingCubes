@@ -215,7 +215,7 @@ public class Chunk : MonoBehaviour
     {
         if (updateMesh)
         {
-            MarchingCubes.GenerateMesh(mesh, points, worldSize, lerp, surfaceLevel);
+            MarchingCubes.GenerateMesh(mesh, points, pointsPerAxis * Vector3Int.one, cubeSize, lerp, surfaceLevel);
             updateMesh = false;
         }
     }

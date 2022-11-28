@@ -12,10 +12,10 @@ struct Triangle {
 AppendStructuredBuffer<Triangle> triangles;
 StructuredBuffer<float> points;
 
-int pntPerAxis;
-int pntPerAxis2; // pntPerAxis * pntPerAxis
-int idxMax; // pntPerAxis - 2
-float cubeSize;
+int pointsX;
+int pointsXY;
+int3 idxMax; // pointsSize - 2
+float pointsDist;
 float surfaceLevel;
 bool lerp;
 
@@ -26,7 +26,7 @@ float3 lerpVerts(float4 v1, float4 v2)
 }
 
 int idx(int x, int y, int z) {
-    return z * pntPerAxis2 + y * pntPerAxis + x;
+    return z * pointsXY + y * pointsX + x;
 }
 
 [numthreads(threadsPerAxis, threadsPerAxis, threadsPerAxis)]
@@ -37,7 +37,7 @@ void March (int3 id : SV_DispatchThreadID)
     int z = id.z;
 
     // Stop one point before the end because voxel includes neighbouring points
-    if (x > idxMax || y > idxMax || z > idxMax)
+    if (x > idxMax.x || y > idxMax.y || z > idxMax.z)
         return;
   
 
@@ -83,9 +83,9 @@ void March (int3 id : SV_DispatchThreadID)
         int b2 = cornerIndexBFromEdge[edges[i+2]];
 
         Triangle tri;
-        tri.vertexA = lerpVerts(cubeCorners[a0], cubeCorners[b0]) * cubeSize;
-        tri.vertexB = lerpVerts(cubeCorners[a1], cubeCorners[b1]) * cubeSize;
-        tri.vertexC = lerpVerts(cubeCorners[a2], cubeCorners[b2]) * cubeSize;
+        tri.vertexA = lerpVerts(cubeCorners[a0], cubeCorners[b0]) * pointsDist;
+        tri.vertexB = lerpVerts(cubeCorners[a1], cubeCorners[b1]) * pointsDist;
+        tri.vertexC = lerpVerts(cubeCorners[a2], cubeCorners[b2]) * pointsDist;
         triangles.Append(tri);
     }
 }

@@ -11,35 +11,37 @@ public static class MarchingCubes
     static ComputeShader computeShader;
 
 
-    static public Mesh GenerateMesh(float[] points, float worldSize, bool lerp = true, float surfaceLevel = 0.5f)
+    static public Mesh GenerateMesh(float[] points, Vector3Int pointsSize, float pointsDist, bool lerp = true, float surfaceLevel = 0.5f)
     {
         Mesh mesh = new Mesh();
-        GenerateMesh(mesh, points, worldSize, lerp, surfaceLevel);
+        GenerateMesh(mesh, points, pointsSize, pointsDist, lerp, surfaceLevel);
         return mesh;
     }
 
-    static public void GenerateMesh(Mesh mesh, float[] points, float worldSize, bool lerp = true, float surfaceLevel = 0.5f)
+    static public void GenerateMesh(Mesh mesh, float[] points, Vector3Int pointsSize, float pointsDist, bool lerp = true, float surfaceLevel = 0.5f)
     {
-        int pntPerAxis = (int)Mathf.Pow(points.Length, 1 / 3f);
-
         // return if points is not a cube
-        if (pntPerAxis * pntPerAxis * pntPerAxis != points.Length)
+        if (points.Length != pointsSize.x * pointsSize.y * pointsSize.z)
         {
-            Debug.Log($"points is not a cube : pntPerAxis = {pntPerAxis}   points.Length = {points.Length}");
+            Debug.Log($"points.Length {points.Length} don't match pointsSize {pointsSize}");
             return;
         }
 
         // return if not enough points
-        if (pntPerAxis < 2)
+        if (pointsSize.x < 2 || pointsSize.y < 2 || pointsSize.z < 2)
         {
-            Debug.Log($"not enough points : pntPerAxis (={pntPerAxis}) < 2");
+            Debug.Log($"Not enough points : pointsSize {pointsSize}");
             return;
         }
 
-        int cubePerAxis = pntPerAxis - 1;
-        int threadGroups = Mathf.CeilToInt((float)cubePerAxis / threadsPerAxis);
-        float cubeSize = worldSize / cubePerAxis;
-        int cubeCount = cubePerAxis * cubePerAxis * cubePerAxis;
+        Vector3Int cubesSize = pointsSize - Vector3Int.one;
+
+        Vector3Int threadGroups = new Vector3Int(
+            Mathf.CeilToInt((float)cubesSize.x / threadsPerAxis),
+            Mathf.CeilToInt((float)cubesSize.y / threadsPerAxis),
+            Mathf.CeilToInt((float)cubesSize.z / threadsPerAxis));
+
+        int cubeCount = cubesSize.x * cubesSize.y * cubesSize.z;
         int maxTriangles = cubeCount * 5;
  
         ComputeBuffer pointsBuffer = new ComputeBuffer(points.Length, sizeof(float));
@@ -49,14 +51,14 @@ public static class MarchingCubes
 
         ComputeShader.SetBuffer(0, "points", pointsBuffer);
         ComputeShader.SetBuffer(0, "triangles", trianglesBuffer);
-        ComputeShader.SetInt("pntPerAxis", pntPerAxis);
-        ComputeShader.SetInt("idxMax", pntPerAxis - 2);
-        ComputeShader.SetInt("pntPerAxis2", pntPerAxis * pntPerAxis);
-        ComputeShader.SetFloat("cubeSize", cubeSize);
+        ComputeShader.SetInt("pointsX", pointsSize.x);
+        ComputeShader.SetInt("pointsXY", pointsSize.x * pointsSize.y);
+        ComputeShader.SetInts("idxMax", new int[] { pointsSize.x - 2, pointsSize.y - 2 , pointsSize.z - 2});
+        ComputeShader.SetFloat("pointsDist", pointsDist);
         ComputeShader.SetFloat("surfaceLevel", surfaceLevel);
         ComputeShader.SetBool("lerp", lerp);
 
-        ComputeShader.Dispatch(0, threadGroups, threadGroups, threadGroups);
+        ComputeShader.Dispatch(0, threadGroups.x, threadGroups.y, threadGroups.z);
 
         // Get number of triangles in the triangle buffer
         ComputeBuffer triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
